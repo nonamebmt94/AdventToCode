@@ -1,29 +1,28 @@
 const findCoordinates = (command: string) => {
-  const pattern = /(\d+,\d+)/g;
+  const pattern = /\d+/g;
   const matches = command.match(pattern);
-
   if (!matches) {
     throw new Error('No coordinates found');
   }
 
-  const [first, second] = matches;
-  return { first, second };
+  const [x1, y1, x2, y2] = matches;
+
+  return { x1: Number(x1), y1: Number(y1), x2: Number(x2), y2: Number(y2) };
 };
 
 const FireHazard = (commands: string[]) => {
   const lightsOn: { [key: string]: number } = {};
 
   const handleLights = (
-    first: string,
-    second: string,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
     type: 'on' | 'off' | 'toggle'
   ) => {
-    const [x1, y1] = first.split(',').map(Number);
-    const [x2, y2] = second.split(',').map(Number);
-
     for (let i = x1; i <= x2; i++) {
       for (let j = y1; j <= y2; j++) {
-        const key = `${i},${j}`;
+        const key = i * 1000 + j;
         if (type === 'on') {
           if (!lightsOn[key]) lightsOn[key] = 1;
           else lightsOn[key] += 1;
@@ -45,23 +44,22 @@ const FireHazard = (commands: string[]) => {
   };
 
   for (const command of commands) {
-    const { first, second } = findCoordinates(command);
+    const { x1, y1, x2, y2 } = findCoordinates(command);
     switch (true) {
       case command.includes('turn on'):
-        handleLights(first, second, 'on');
+        handleLights(x1, y1, x2, y2, 'on');
         break;
       case command.includes('turn off'):
-        handleLights(first, second, 'off');
+        handleLights(x1, y1, x2, y2, 'off');
         break;
       case command.includes('toggle'):
-        handleLights(first, second, 'toggle');
+        handleLights(x1, y1, x2, y2, 'toggle');
         break;
       default:
         break;
     }
   }
   let totalLights = 0;
-  console.log(lightsOn);
   Object.keys(lightsOn).forEach((key) => {
     totalLights += lightsOn[key];
   });
