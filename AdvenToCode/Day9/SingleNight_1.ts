@@ -2,6 +2,14 @@ import { getFileData } from '../../getFileData';
 
 const inputs = getFileData('/Day9/input.txt');
 
+// TODO - use DFS to find the shortest path
+// Time n*k
+// Memory n
+
+// Current solution
+// Memory n^n
+// Complexity n^n
+
 function prepareData(inputs: string[]): {
   locations: string[];
   distances: { [key: string]: number };
@@ -56,10 +64,11 @@ function SingleNight_1(inputs: string[]): number {
   // console.log(distances);
 
   const allRoutes = generatePermutations(locations);
+  // console.log('allRoutes', allRoutes);
   const allDistances = allRoutes.map((route: string[]) => {
     return calculationDistance(route, distances);
   });
-  console.log('allDistances', allDistances);
+  // console.log('allDistances', allDistances);
   return Math.min(...allDistances);
 }
 
